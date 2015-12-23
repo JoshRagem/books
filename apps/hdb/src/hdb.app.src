@@ -1,0 +1,18 @@
+{application, hdb,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {hdb_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    erlexec,
+    lager
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {contributors, []},
+  {licenses, []},
+  {links, []}
+ ]}.

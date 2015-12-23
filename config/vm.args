@@ -1,0 +1,6 @@
+-name hdb@local
+
+-setcookie hdb_cookie
+
++K true
++A30
