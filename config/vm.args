@@ -1,6 +1,0 @@
--name books@local
-
--setcookie books_cookie
-
-+K true
-+A30
