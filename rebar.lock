@@ -4,6 +4,6 @@
  {<<"lager">>,{pkg,<<"lager">>,<<"3.0.2">>},0},
  {<<"lmdb">>,
   {git,"https://github.com/joshragem/lmdb.git",
-       {ref,"a3b3fc91be27f7c542b5df387cc1669407ed725e"}},
+       {ref,"6db3a13ce1d580df7e2776dcd8578ae37ffe44fb"}},
   0},
  {<<"ranch">>,{pkg,<<"ranch">>,<<"1.2.0">>},1}].
