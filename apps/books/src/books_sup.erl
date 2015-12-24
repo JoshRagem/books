@@ -1,9 +1,9 @@
 %%%-------------------------------------------------------------------
-%% @doc hdb top level supervisor.
+%% @doc books top level supervisor.
 %% @end
 %%%-------------------------------------------------------------------
 
--module('hdb_sup').
+-module(books_sup).
 
 -behaviour(supervisor).
 
@@ -27,14 +27,9 @@ start_link() ->
 %%====================================================================
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
-init([]) ->
-    SupFlags = #{strategy => one_for_one
-                ,intensity => 100
-                ,period => 5},
-    CProc = #{id => cproc1
-             ,start => {hdb_c_proc, start_link, [test]}
-             ,type => worker},
-    Procs = [CProc],
+init(_) ->
+    SupFlags = #{strategy => one_for_all},
+    Procs = [],
     {ok, { SupFlags, Procs} }.
 
 %%====================================================================

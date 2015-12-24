@@ -1,6 +1,6 @@
--name hdb@local
+-name books@local
 
--setcookie hdb_cookie
+-setcookie books_cookie
 
 +K true
 +A30

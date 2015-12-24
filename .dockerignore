@@ -1,0 +1,5 @@
+_build
+.git
+.gitignore
+.projectile
+README.md
