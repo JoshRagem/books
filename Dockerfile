@@ -19,6 +19,18 @@ RUN make libh2o
 RUN mv libh2o.a /usr/local/lib
 RUN mv include/* /usr/local/include/
 
+WORKDIR /lmdb
+RUN git clone https://github.com/lmdb/lmdb.git .
+WORKDIR /lmdb/libraries/liblmdb
+RUN make
+RUN make install
+
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
 WORKDIR /books
 
 COPY . ./
+RUN make
+
+EXPOSE 7890
+CMD ./books

@@ -1,11 +1,12 @@
 books
 =====
 
-An OTP application
+h2o plus libuv plus lmdb = books
+
+Write once. Read many.
 
 Build
 -----
 
-    $ rebar3 compile
+    $ make
 
-Note: The Dockerfile installs and builds things, but erlexec does not seem to be able to launch child processes in the docker environment

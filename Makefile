@@ -18,7 +18,7 @@ OFILES := $(OBJFILES:%=obj/%.o)
 BINFILE = books
 
 COMMONFLAGS = -Wall -Wextra -pedantic
-LDFLAGS = -l uv -l h2o -l pthread -l ssl -l crypto
+LDFLAGS = -l uv -l h2o -l pthread -l ssl -l crypto -l lmdb
 
 ifdef DEBUG
 	COMMONFLAGS := $(COMMONFLAGS) -g
