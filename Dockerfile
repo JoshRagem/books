@@ -1,7 +1,7 @@
 FROM ubuntu
 
 RUN apt-get update
-RUN apt-get -y install git curl build-essential cmake autoconf libtool zlib1g-dev libssl-dev
+RUN apt-get -y install git curl build-essential cmake autoconf libtool zlib1g-dev libssl-dev gdb
 
 WORKDIR /libuv
 
@@ -27,10 +27,12 @@ RUN make install
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 
+RUN apt-get -y install valgrind
 WORKDIR /books
 
 COPY . ./
 RUN make
+
 
 EXPOSE 7890
 CMD ./books

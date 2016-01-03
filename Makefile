@@ -20,9 +20,7 @@ BINFILE = books
 COMMONFLAGS = -Wall -Wextra -pedantic
 LDFLAGS = -l uv -l h2o -l pthread -l ssl -l crypto -l lmdb
 
-ifdef DEBUG
-	COMMONFLAGS := $(COMMONFLAGS) -g
-endif
+OMMONFLAGS := $(COMMONFLAGS) -static -g -O0
 CFLAGS = $(COMMONFLAGS) --std=c99 -D_GNU_SOURCE
 CXXFLAGS = $(COMMONFLAGS) --std=c++0x
 DEPDIR = deps
