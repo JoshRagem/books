@@ -67,8 +67,8 @@ static int handle_data(h2o_handler_t *self, h2o_req_t *req)
     }
 
     mdb_cursor_close(cursor);
-    mdb_dbi_close(env, dbi);
-    mdb_txn_abort(txn);
+    //    mdb_dbi_close(env, dbi);
+    mdb_txn_commit(txn);
 
     static h2o_generator_t generator = {NULL, NULL};
     req->res.status = 200;
@@ -79,7 +79,7 @@ static int handle_data(h2o_handler_t *self, h2o_req_t *req)
     return 0;
   } else if (h2o_memis(req->method.base, req->method.len, H2O_STRLIT("GET")) &&
              h2o_memis(req->path_normalized.base, req->path_normalized.len, H2O_STRLIT("/data/"))) {
-    int txnres = mdb_txn_begin(env, NULL, MDB_RDONLY, &txn);
+    int txnres = mdb_txn_begin(env, NULL, 0, &txn);
     printf("txn res: %i\n", txnres);
     mdb_dbi_open(txn, "test", MDB_CREATE, &dbi);
     int curres = mdb_cursor_open(txn, dbi, &cursor);
@@ -92,7 +92,7 @@ static int handle_data(h2o_handler_t *self, h2o_req_t *req)
     char *strkey = "key";
 
     MDB_val key = {strlen(strkey), strdup(strkey)};
-    MDB_val value = {0, strdup("")};
+    MDB_val value = {0, NULL};
 
     int res = mdb_cursor_get(cursor, &key, &value, MDB_FIRST);
     printf("res get: %i\n", res);
@@ -105,14 +105,16 @@ static int handle_data(h2o_handler_t *self, h2o_req_t *req)
       response.base = "full";
     } else if (res == MDB_MAP_FULL) {
       response.base = "mapfull";
+    } else if (res == 0) {
+      response.base = strdup(value.mv_data);
     } else {
       perror("get error?");
       response.base = "found not :(\r\n";
     }
-    response.len = sizeof(response.base);
+    response.len = strlen(response.base);
 
     mdb_cursor_close(cursor);
-    mdb_dbi_close(env, dbi);
+    //    mdb_dbi_close(env, dbi);
     mdb_txn_commit(txn);
 
     static h2o_generator_t generator = {NULL, NULL};
