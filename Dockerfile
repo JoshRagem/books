@@ -1,38 +1,26 @@
-FROM ubuntu
+FROM debian:jessie
 
-RUN apt-get update
-RUN apt-get -y install git curl build-essential cmake autoconf libtool zlib1g-dev libssl-dev gdb
+RUN apt update && apt install -y curl unzip build-essential file libc6-dev
 
-WORKDIR /libuv
+COPY ./deb/libclang.list /etc/apt/sources.list.d/
+RUN curl http://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
+RUN apt update && apt install -y libclang-3.9-dev clang-3.9
 
-RUN git clone https://github.com/libuv/libuv.git .
-RUN sh autogen.sh
-RUN ./configure
-RUN make
+WORKDIR /tmp/lmdb
+RUN curl -LO https://github.com/LMDB/lmdb/archive/mdb.master.zip
+RUN unzip mdb.master.zip
+WORKDIR /tmp/lmdb/lmdb-mdb.master/libraries/liblmdb/
 RUN make install
 
-WORKDIR /h2o
-
-RUN git clone https://github.com/h2o/h2o.git .
-RUN cmake .
-RUN make libh2o
-RUN mv libh2o.a /usr/local/lib
-RUN mv include/* /usr/local/include/
-
-WORKDIR /lmdb
-RUN git clone https://github.com/lmdb/lmdb.git .
-WORKDIR /lmdb/libraries/liblmdb
-RUN make
+WORKDIR /opt/rust
+RUN curl https://static.rust-lang.org/dist/rust-1.13.0-x86_64-unknown-linux-gnu.tar.gz | tar -xzf - --strip=1
 RUN make install
+RUN ./install
 
-ENV LD_LIBRARY_PATH=/usr/local/lib
-
-RUN apt-get -y install valgrind
-WORKDIR /books
-
+WORKDIR /opt/rlmdb
+RUN USER=docker cargo init
+COPY ./Cargo.toml ./build.rs wrapper.h ./
+RUN cargo build
+RUN mkdir -p /tmp/mdb
 COPY . ./
-RUN make
-
-
-EXPOSE 7890
-CMD ./books
+RUN cargo build
