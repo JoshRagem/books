@@ -12,7 +12,8 @@ mod tests {
     use std::mem;
     use std::ffi::CString;
     use std::ptr::null_mut;
-    //use libc::perror;
+    use std::sync::Arc;
+    // use libc::perror;
 
     #[test]
     fn it_works() {
@@ -24,7 +25,7 @@ mod tests {
             assert_eq!(0, res);
             let path = CString::new("/tmp/mdb/").unwrap();
             let res_open = mdb_env_open(eptr, path.as_ptr(), 0, 700);
-            //perror(path.as_ptr());
+            // perror(path.as_ptr());
             assert_eq!(0, res_open);
             let mut txn: MDB_txn = mem::zeroed();
             let mut tptr: *mut MDB_txn = &mut txn;
@@ -34,6 +35,10 @@ mod tests {
             let db_name = CString::new("test").unwrap();
             let res_dbi = mdb_dbi_open(tptr, db_name.as_ptr(), MDB_CREATE, &mut dbi as *mut _);
             assert_eq!(0, res_dbi);
+            let mut crs: MDB_cursor = mem::zeroed();
+            let mut cptr: *mut MDB_cursor = &mut crs;
+            let res_crs = mdb_cursor_open(tptr, dbi, &mut cptr as *mut _);
+            assert_eq!(0, res_crs);
         }
     }
 }
