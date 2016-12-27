@@ -71,6 +71,10 @@ mod tests {
             let junk: &[u8] = slice::from_raw_parts(valval.mv_data as *const u8, valval.mv_size);
             let junkstr = str::from_utf8(junk).unwrap();
             assert_eq!(valstr, junkstr);
+            mdb_cursor_close(cptr);
+            let res_cls = mdb_txn_commit(tptr);
+            assert_eq!(0, res_cls);
+            mdb_env_close(eptr);
         }
     }
 }
