@@ -5,8 +5,7 @@ authors = ["joshragem <barney@whoop.com>"]
 build = "build.rs"
 
 [build-dependencies]
-serde = "0.8.19"
-libbindgen = "0.1.3"
+libbindgen = "0.1.4"
 
 [dependencies]
 libc = "*"
