@@ -71,6 +71,30 @@ mod tests {
             let junk: &[u8] = slice::from_raw_parts(valval.mv_data as *const u8, valval.mv_size);
             let junkstr = str::from_utf8(junk).unwrap();
             assert_eq!(valstr, junkstr);
+            for mut i in 1..100 {
+                let mut keyval: MDB_val = MDB_val { mv_size: 1, mv_data: &mut i as *mut _ as *mut c_void };
+                let mut valval: MDB_val = MDB_val { mv_size: 1, mv_data: &mut i as *mut _ as *mut c_void };
+                let res = mdb_cursor_put(cptr, &mut keyval as *mut _, &mut valval as *mut _, MDB_NOOVERWRITE);
+                assert_eq!(0, res);
+            }
+            let mut rangekey: MDB_val = MDB_val { mv_size: 1, mv_data: &mut 1 as *mut _ as *mut c_void };
+            let mut valnew2: MDB_val = MDB_val { mv_size: 0, mv_data: null_mut() };
+            let res_get2 = mdb_cursor_get(cptr, &mut rangekey as *mut _, &mut valnew2 as *mut _, MDB_cursor_op::MDB_SET_RANGE);
+            assert_eq!(0, res_get2);
+            assert_eq!(1, valnew2.mv_size);
+            let range_val: u8 = *(valnew2.mv_data as *const u8);
+            assert_eq!(1, range_val);
+            let res_get3 = mdb_cursor_get(cptr, &mut rangekey as *mut _, &mut valnew2 as *mut _, MDB_cursor_op::MDB_FIRST);
+            assert_eq!(0, res_get3);
+            assert_eq!(1, valnew2.mv_size);
+            let range_val_first: u8 = *(valnew2.mv_data as *const u8);
+            assert_eq!(1, range_val_first);
+            for i in 2..100 {
+                let res = mdb_cursor_get(cptr, &mut rangekey as *mut _, &mut valnew2 as *mut _, MDB_cursor_op::MDB_NEXT);
+                assert_eq!(0, res);
+                let new_val: u8 = *(valnew2.mv_data as *const u8);
+                assert_eq!(i, new_val);
+            }
             mdb_cursor_close(cptr);
             let res_cls = mdb_txn_commit(tptr);
             assert_eq!(0, res_cls);
