@@ -9,3 +9,4 @@ bindgen = "0.22.1"
 
 [dependencies]
 libc = "*"
+tempdir = "0.3.5"

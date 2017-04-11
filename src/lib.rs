@@ -3,6 +3,7 @@
 #![allow(non_snake_case)]
 
 extern crate libc;
+extern crate tempdir;
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
@@ -16,16 +17,18 @@ mod tests {
     use std::ffi::CString;
     use std::ptr::null_mut;
     use std::os::raw::c_void;
+    use tempdir::TempDir;
 
     #[test]
     fn it_works() {
+        let tmpdir = TempDir::new("mdb_test").unwrap();
         unsafe {
             let mut env: MDB_env = mem::zeroed();
             let mut eptr: *mut MDB_env = &mut env;
             let res = mdb_env_create(&mut eptr as *mut _);
             mdb_env_set_maxdbs(eptr, 10);
             assert_eq!(0, res);
-            let path = CString::new("/tmp/mdb/").unwrap();
+            let path = CString::new(tmpdir.path().to_str().unwrap()).unwrap();
             let res_open = mdb_env_open(eptr, path.as_ptr(), 0, 700);
             // perror(path.as_ptr());
             assert_eq!(0, res_open);
